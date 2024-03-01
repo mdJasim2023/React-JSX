@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edupoly</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <style>
+        #head{
+            background: linear-gradient(to right,rgba(90,0,100),#fff 90%);
+            border-radius: 10px;
+        }
+        #head h1{
+            font-size: 40px;
+            font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            font-weight: 900;
+        }
+        #head h3{
+            background: linear-gradient(to right,rgb(9, 103, 181), orangered 90%);
+            padding: 15px;
+            border-radius: 25px;
+            color: #fff;
+            font-size: 15px;
+        }
+
+        
+
+        #hov:hover{
+            background: linear-gradient(to right,rgba(90,0,100),#fff 90%);
+            cursor: pointer;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="d1" style="margin: 20px;"></div>
+    <script type="text/babel">
+        function MainTodo(){
+            var [todo,setTodo]=React.useState([])
+            var [isupdate,setIsupdate]=React.useState(false)
+            var [c,setC]=React.useState(0)
+            var [comp,setComp]=React.useState(0)
+            var [incomp,setIncomp]=React.useState(0)
+            function editbtn(ind){
+            setC(c-1)
+            setIncomp(incomp-1)
+            // setComp(comp-1)
+            var temp=[...todo]
+                temp.splice(ind,1)
+                setTodo([...temp])
+            }
+            function donebtn(ind){
+                setIncomp(incomp-1)
+                setComp(comp+1)
+                todo[ind].status=true
+                setTodo([...todo])
+            }
+            function undobtn(ind){
+                setIncomp(incomp+1)
+                setComp(comp-1)
+                todo[ind].status=false
+                setTodo([...todo])
+                
+            }
+            function add(item)
+            {
+                setIncomp(incomp+1)
+                setC(c+1)
+                setTodo([...todo,{task:item,status:false}])
+               
+            }
+            function delbtn(ind){
+                var temp=[...todo]
+                temp.splice(ind,1)
+                setTodo([...temp])
+            }
+           
+            return(
+                <div className='border border-success p-5 border-2 ' style={{width:'70%',margin:'0px auto'}}>
+                    <Head/>
+                    <NewTodoForm add={add}/>
+                    <AllTodo todo={todo} delbtn={delbtn} donebtn={donebtn} undobtn={undobtn} editbtn={editbtn}/>
+                </div>
+            )
+
+        function Head(){
+            return(
+                <div className='p-5 d-flex flex-wrap justify-content-around align-items-center' id='head'>
+                    <img src="my.jpg" style={{borderRadius:'50%',width:'120px'}} width='10%'/>
+                        <h1 style={{color:'#fff',textTransform:'uppercase'}}>jasim to-do list</h1>  
+                        <h3>Completed <span id='complete'>{comp}</span></h3>
+                        <h3>Incompleted <span id='incomplete'>{incomp}</span></h3>
+                        <h3>All <span id='all'>{c}</span></h3>
+                </div>
+            )
+        }
+        function NewTodoForm(props){
+            var [newitem,setnewitem]=React.useState('')
+            return(
+                <div className=' p-5 mt-2'>
+                    <h1>Add Todo List</h1>
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="floatingInput" width='50%' placeholder='Name' onKeyUp={(e)=>{setnewitem(e.target.value)}} />
+                            <label for="floatingInput">Enter To-Do Items</label>
+                        </div>
+                    <div>
+                        <button class="form-control btn btn-danger p-2" onClick={()=>{props.add(newitem)}}>Add Todo</button>
+                    </div>
+                    
+                </div>
+            )
+        }
+        function AllTodo(props){
+                return(
+                <div className='p-5 mt-2'>
+                    <h1 class='p-2'>All Todos :</h1>
+                    {
+                        props.todo.map((a,i)=>{
+                            return <Todos a={a} delbtn={props.delbtn} i={i} donebtn={props.donebtn} undobtn={props.undobtn} editbtn={props.editbtn} />
+                    })
+                    }  
+                </div>
+            )
+        }
+       
+        function Todos(props){
+            return(
+                <div className=' p-4 border-1 mt-2 text-info d-flex flex-wrap justify-content-between' id='hov'>
+                    <h2 id='list' style={props.a.status?{textDecoration:'line-through',color:'red'}:{}}>{props.a.task}</h2>
+                    <div>
+                    {!props.a.status &&  <button class='btn btn-success m-2 ' style={{padding:'10px', width:'100px'}} onClick={()=>{props.donebtn(props.i)}}>Done</button>}
+                    { props.a.status &&   <button class='btn btn-info m-2 ' style={{padding:'10px', width:'100px'}} id='done' onClick={()=>{props.undobtn(props.i)}}>undo</button>}
+                    <button class='btn btn-danger'style={{padding:'10px', width:'100px'}} onClick={()=>{props.editbtn(props.i)}}>Delete</button>
+                    </div>
+                </div>
+            )
+        }}
+        ReactDOM.render(<MainTodo/>,document.getElementById('d1'))
+    </script>
+</body>
+</html>
